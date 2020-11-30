@@ -27,4 +27,35 @@ const server = new ApolloServer({
 ## Resolver level
 
 For example, login time, client dont have token, so we don't use context level authentication.
+`Resolver level auth` is more efficient. Context only return user matched, if no user matched, return undefined. Resolver only check it.
+
+```javascript
+export const resolvers = {
+	Query : {
+		authenticate : (_, { name, password }) => {
+			const found = Users.find(user => user.name === name && user.password === password)
+			return found && found.token
+		},
+
+		userData : (_, { id }, { user }) => { //third param is context
+			if (!user) throw new AuthenticationError("not auth")
+			return UserData.find(data => data.id === id)
+		}
+	},
+	...
+}
+
+
+const server = new ApolloServer({
+	typeDefs, resolvers,
+	context : ({ req }) => {
+		if (!req.headers.authorization)
+			return { user : undefined }
+		
+		const token = req.headers.authorization.substr(7); //last token string
+		const user = DB.User.find((user) => user.token === token);
+		return { user };
+	}
+});
+```
 
