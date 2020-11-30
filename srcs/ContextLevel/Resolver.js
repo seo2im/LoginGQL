@@ -1,4 +1,4 @@
-import { UserData, Users } from './DB'
+import { UserData, Users } from '../DB'
 
 export const resolvers = {
 	Query : {

@@ -1,2 +1,2 @@
-export { User } from './Users'
+export { Users } from './Users'
 export { UserData } from './UserData'
